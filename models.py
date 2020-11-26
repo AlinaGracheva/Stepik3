@@ -1,7 +1,9 @@
+import csv
+
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-import csv
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
 
@@ -21,9 +23,9 @@ app.app_context().push()
 
 
 orders_meals_association = db.Table("orders_meals",
-    db.Column("order_id", db.Integer, db.ForeignKey("orders.id")),
-    db.Column("meal_id", db.Integer, db.ForeignKey("meals.id"))
-)
+                                    db.Column("order_id", db.Integer, db.ForeignKey("orders.id")),
+                                    db.Column("meal_id", db.Integer, db.ForeignKey("meals.id"))
+                                    )
 
 
 class User(db.Model):
@@ -31,7 +33,19 @@ class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
 
     mail = db.Column(db.String(), nullable=False, unique=True)
+    password_hash = db.Column(db.String(128), nullable=False)
     orders = db.relationship("Order", back_populates="user")
+
+    @property
+    def password(self):
+        raise AttributeError("Вам не нужно знать пароль!")
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def password_valid(self, password):
+        return check_password_hash(self.password_hash, password)
 
 
 class Meal(db.Model):
@@ -74,7 +88,7 @@ if __name__ == "__main__":
         reader = csv.reader(file)
         categories = []
         for row in reader:
-            categories.append(Category (title=row[1]))
+            categories.append(Category(title=row[1]))
     del categories[0]
     db.session.add_all(categories)
     db.session.commit()
