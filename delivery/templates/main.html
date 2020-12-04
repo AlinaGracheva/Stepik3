@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+  {% block title %} <title>{{ super() }}</title>{% endblock %}
+  {% block container %}
+    {% include 'style.html' %}
+</head>
+
+<body>
+    {% include 'menu.html' %}
+  <main class="container mt-3">
+    {% include 'title.html' %}
+    {% for cat, cat_meals in meals.items() %}
+    <section>
+      <h3 class="my-4">{{ cat }}</h3>
+      <div class="card-deck">
+        {% for meal in cat_meals %}
+        <div class="card">
+          <img src="{{ url_for('static', filename=meal['picture']) }}" width="300" height="240" class="card-img-top" alt="">
+          <div class="card-body">
+            <h4 class="h5 card-title">{{ meal['title'] }}</h4>
+            <p class="card-text">{{ meal['description'] }}</p>
+
+          </div>
+          <div class="card-footer">
+            <a href="{{ url_for('addtocart_view', meal_id=meal['id']) }}" class="btn btn-danger">В корзину</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      </div>
+    </section>
+    {% endfor %}
+  </main>
+  {% include 'footer.html' %}
+</body>
+</html>
+ {% endblock %}
