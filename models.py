@@ -1,5 +1,5 @@
 import csv
-
+from datetime import datetime
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -73,13 +73,14 @@ class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer(), primary_key=True)
 
-    datetime = db.Column(db.DateTime, nullable=False)
+    datetime = db.Column(db.DateTime, default=datetime.now)
     price = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("User", back_populates="orders")
     phone = db.Column(db.String(), nullable=False)
     address = db.Column(db.String(), nullable=False)
+    cart = db.Column(db.String(), nullable=False)
     meals = db.relationship("Meal", secondary=orders_meals_association, back_populates="orders")
 
 
