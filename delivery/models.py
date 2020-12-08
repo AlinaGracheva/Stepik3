@@ -1,22 +1,12 @@
 import csv
 from datetime import datetime
 
-from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from delivery.config import Config
-
 db = SQLAlchemy()
 migrate = Migrate()
-
-
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-    db.init_app(app)
-    return app
 
 
 orders_meals_association = db.Table("orders_meals",

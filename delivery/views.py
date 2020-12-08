@@ -3,10 +3,9 @@ from flask import render_template, session, redirect, url_for, flash
 
 from delivery.forms import OrderForm, RegisterForm, AuthenticationForm
 from delivery.models import Category, User, Order
-from delivery.models import create_app
 from delivery.secondary_functions import *
 
-app = create_app()
+from delivery import app
 
 
 @app.route('/')
