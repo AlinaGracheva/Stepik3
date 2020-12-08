@@ -1,3 +1,3 @@
 import delivery
 
-delivery.app.run()
+delivery.app.run(debug=False)

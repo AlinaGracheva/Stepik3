@@ -10,9 +10,9 @@
     {% include 'title.html' %}
     {% for cat, cat_meals in meals.items() %}
     <section>
-      <h3 class="my-4">{{ cat }}</h3>
+        <h3 class="my-4"><a href="{{ url_for('category_view', category_id=cat_meals[0]) }}" class="text-dark">{{ cat }}</a></h3>
       <div class="card-deck">
-        {% for meal in cat_meals %}
+        {% for meal in cat_meals[1] %}
         <div class="card">
           <img src="{{ url_for('static', filename=meal['picture']) }}" width="300" height="240" class="card-img-top" alt="">
           <div class="card-body">
