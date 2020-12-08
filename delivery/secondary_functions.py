@@ -24,12 +24,12 @@ def date_format(datetime):
     return ' '.join(date)
 
 
-def case_endings(len):
+def case_endings(length):
     if len in [i for i in range(5, 21)]:
         return 'блюд'
-    elif len % 10 == 1:
+    elif length % 10 == 1:
         return 'блюдо'
-    elif len % 10 == 2 or len % 10 == 3 or len % 10 == 4:
+    elif length % 10 == 2 or length % 10 == 3 or length % 10 == 4:
         return 'блюда'
     else:
         return 'блюд'

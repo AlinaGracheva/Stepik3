@@ -3,12 +3,10 @@ from flask import render_template, session, redirect, url_for, flash
 
 from delivery.forms import OrderForm, RegisterForm, AuthenticationForm
 from delivery.models import Category, User, Order
-from delivery.secondary_functions import *
 from delivery.models import create_app
-
+from delivery.secondary_functions import *
 
 app = create_app()
-app.app_context().push()
 
 
 @app.route('/')
@@ -49,7 +47,11 @@ def category_view(category_id):
             {'id': meal.id, 'title': meal.title, 'price': meal.price, 'description': meal.description,
              'picture': meal.picture}
         )
-    return render_template("category.html", category_title=category_title, meals=meals, cart=cart, meals_in_cart=meals_in_cart, is_login=is_login,
+    return render_template("category.html",
+                           category_title=category_title,
+                           meals=meals, cart=cart,
+                           meals_in_cart=meals_in_cart,
+                           is_login=is_login,
                            dish=dish)
 
 
