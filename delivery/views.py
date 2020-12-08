@@ -23,12 +23,34 @@ def main_view():
         is_login = True
     meals = dict()
     for category in db.session.query(Category).all():
-        meals[category.title] = []
+        meals[category.title] = [category.id, []]
         for meal in db.session.query(Meal).filter_by(category_id=category.id).order_by(db.func.random()).limit(3).all():
-            meals[category.title].append(
+            meals[category.title][1].append(
                 {'id': meal.id, 'title': meal.title, 'price': meal.price, 'description': meal.description, 'picture': meal.picture}
             )
     return render_template("main.html", meals=meals, cart=cart, meals_in_cart=meals_in_cart, is_login=is_login, dish=dish)
+
+
+@app.route('/category/<int:category_id>/')
+def category_view(category_id):
+    cart = session.get("cart", [])
+    meals_in_cart = meals_(cart)
+    dish = case_endings(len(meals_in_cart))
+    user = session.get("user")
+    if user is None:
+        is_login = False
+    else:
+        is_login = True
+    meals = []
+    category = db.session.query(Category).get_or_404(category_id)
+    category_title = category.title
+    for meal in db.session.query(Meal).filter_by(category_id=category.id).all():
+        meals.append(
+            {'id': meal.id, 'title': meal.title, 'price': meal.price, 'description': meal.description,
+             'picture': meal.picture}
+        )
+    return render_template("category.html", category_title=category_title, meals=meals, cart=cart, meals_in_cart=meals_in_cart, is_login=is_login,
+                           dish=dish)
 
 
 @app.route('/addtocart/<int:meal_id>/')
@@ -43,7 +65,6 @@ def addtocart_view(meal_id):
 def removefromcart_view(meal_id):
     cart = session['cart']
     cart.remove(meal_id)
-    session['cart'] = cart
     flash("Блюдо удалено из корзины")
     return redirect('/cart/')
 
