@@ -9,8 +9,8 @@ if os.path.exists(dotenv_path):
 db_path = os.environ.get("DATABASE_URL")
 secret = os.environ.get("SECRET_KEY")
 
-
 class Config:
     SECRET_KEY = secret
     SQLALCHEMY_DATABASE_URI = db_path
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+

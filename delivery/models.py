@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_security import RoleMixin, UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
@@ -11,17 +12,22 @@ migrate = Migrate()
 
 orders_meals_association = db.Table("orders_meals",
                                     db.Column("order_id", db.Integer, db.ForeignKey("orders.id")),
-                                    db.Column("meal_id", db.Integer, db.ForeignKey("meals.id"))
-                                    )
+                                    db.Column("meal_id", db.Integer, db.ForeignKey("meals.id")))
 
 
-class User(db.Model):
+roles_users_association = db.Table("roles_users",
+                                   db.Column("role_id", db.Integer, db.ForeignKey("roles.id")),
+                                   db.Column("user_id", db.Integer, db.ForeignKey("users.id")))
+
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer(), primary_key=True)
 
     mail = db.Column(db.String(), nullable=False, unique=True)
     password_hash = db.Column(db.String(128), nullable=False)
     orders = db.relationship("Order", back_populates="user")
+    roles = db.relationship("Role", secondary=roles_users_association, back_populates="users")
 
     @property
     def password(self):
@@ -33,6 +39,15 @@ class User(db.Model):
 
     def password_valid(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class Role(db.Model, RoleMixin):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer(), primary_key=True)
+
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+    users = db.relationship("User", secondary=roles_users_association, back_populates="roles")
 
 
 class Meal(db.Model):
