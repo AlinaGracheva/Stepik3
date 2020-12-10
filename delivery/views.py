@@ -1,11 +1,23 @@
 import flask
-from flask import render_template, session, redirect, url_for, flash
+from flask import render_template, session, redirect, url_for, flash, abort
 
 from delivery.forms import OrderForm, RegisterForm, AuthenticationForm
 from delivery.models import Category, User, Order
 from delivery.secondary_functions import *
 
 from delivery import app
+
+
+@app.before_request
+def admin_security():
+    if flask.request.path.startswith('/admin'):
+        users_mail = session.get("user")
+        if users_mail is not None:
+            user = db.session.query(User).filter(User.mail == users_mail).first()
+            if user.is_admin:
+                return
+            return abort(401)
+        return abort(401)
 
 
 @app.route('/')
