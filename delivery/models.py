@@ -72,29 +72,32 @@ class Order(db.Model):
 
 
 if __name__ == "__main__":
-    with open("delivery/categories.csv", "r", encoding="utf-8") as file:
-        reader = csv.reader(file)
-        categories = []
-        for row in reader:
-            categories.append(Category(title=row[1]))
-    del categories[0]
-    db.session.add_all(categories)
-    db.session.commit()
-    with open("delivery/meals.csv", "r", encoding="utf-8") as file:
-        reader = csv.DictReader(file, delimiter=',')
-        meals = []
-        for line in reader:
-            meals.append(line)
-    for meal in meals:
-        to_insert = Meal(
-            title=meal['title'],
-            price=int(meal['price']),
-            description=meal['description'],
-            picture='pictures/' + meal['picture'],
-            category=db.session.query(Category).get(int(meal['category_id']))
-        )
-        db.session.add(to_insert)
-    db.session.commit()
-    user = User(mail='admin@admin.ru', password='admin', is_admin=True)
-    db.session.add(user)
-    db.session.commit()
+    from delivery import app
+
+    with app.app_context():
+        with open("delivery/categories.csv", "r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            categories = []
+            for row in reader:
+                categories.append(Category(title=row[1]))
+        del categories[0]
+        db.session.add_all(categories)
+        db.session.commit()
+        with open("delivery/meals.csv", "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file, delimiter=',')
+            meals = []
+            for line in reader:
+                meals.append(line)
+        for meal in meals:
+            to_insert = Meal(
+                title=meal['title'],
+                price=int(meal['price']),
+                description=meal['description'],
+                picture='pictures/' + meal['picture'],
+                category=db.session.query(Category).get(int(meal['category_id']))
+            )
+            db.session.add(to_insert)
+        db.session.commit()
+        user = User(mail='admin@admin.ru', password='admin', is_admin=True)
+        db.session.add(user)
+        db.session.commit()
