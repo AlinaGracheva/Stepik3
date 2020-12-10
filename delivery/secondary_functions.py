@@ -1,4 +1,4 @@
-import locale
+from babel import dates
 
 from delivery.models import db, Meal
 
@@ -15,13 +15,8 @@ def meals_(cart):
 
 
 def date_format(datetime):
-    locale.setlocale(locale.LC_ALL, "ru")
-    date = datetime.strftime('%d %B').split(" ")
-    if date[1] == 'Март' or date[1] == 'Август':
-        date[1] = date[1] + 'а'
-    else:
-        date[1] = date[1][:-1] + 'я'
-    return ' '.join(date)
+    date = dates.format_datetime(datetime, "dd MMMM", locale='ru_RU')
+    return date
 
 
 def case_endings(length):
