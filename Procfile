@@ -1,1 +1,1 @@
-web: gunicorn delivery.__init__
+web: gunicorn delivery.__init__:app
