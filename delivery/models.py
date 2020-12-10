@@ -72,7 +72,7 @@ class Order(db.Model):
 
 
 if __name__ == "__main__":
-    with open("categories.csv", "r", encoding="utf-8") as file:
+    with open("delivery/categories.csv", "r", encoding="utf-8") as file:
         reader = csv.reader(file)
         categories = []
         for row in reader:
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     del categories[0]
     db.session.add_all(categories)
     db.session.commit()
-    with open("meals.csv", "r", encoding="utf-8") as file:
+    with open("delivery/meals.csv", "r", encoding="utf-8") as file:
         reader = csv.DictReader(file, delimiter=',')
         meals = []
         for line in reader:
