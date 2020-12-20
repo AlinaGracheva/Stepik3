@@ -3,7 +3,7 @@ from babel import dates
 from delivery.models import db, Meal
 
 
-def meals_(cart):
+def meals_in_cart_list(cart):
     meals_in_cart = []
     for item in set(cart):
         meal = db.session.query(Meal).get(item)

@@ -23,7 +23,7 @@ def admin_security():
 @app.route('/')
 def main_view():
     cart = session.get("cart", [])
-    meals_in_cart = meals_(cart)
+    meals_in_cart = meals_in_cart_list(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
     is_login = user is not None
@@ -40,7 +40,7 @@ def main_view():
 @app.route('/category/<int:category_id>/')
 def category_view(category_id):
     cart = session.get("cart", [])
-    meals_in_cart = meals_(cart)
+    meals_in_cart = meals_in_cart_list(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
     is_login = user is not None
@@ -80,7 +80,7 @@ def removefromcart_view(meal_id):
 def cart_view():
     form = OrderForm()
     cart = session.get("cart", [])
-    meals_in_cart = meals_(cart)
+    meals_in_cart = meals_in_cart_list(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
     is_login = user is not None
@@ -107,7 +107,7 @@ def cart_view():
 @app.route('/account/')
 def account_view():
     cart = session.get("cart", [])
-    meals_in_cart = meals_(cart)
+    meals_in_cart = meals_in_cart_list(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
     is_login = user is not None
@@ -115,7 +115,7 @@ def account_view():
     orders = []
     for order in db.session.query(Order).filter(Order.user == user_id).all():
         date = date_format(order.datetime)
-        meals = meals_([int(i) for i in order.cart.split(",")])
+        meals = meals_in_cart_list([int(i) for i in order.cart.split(",")])
         orders.append({"date": date, "sum": order.price, "status": order.status, "meals": meals})
     return render_template("account.html", meals_in_cart=meals_in_cart, is_login=is_login, orders=orders, dish=dish)
 
