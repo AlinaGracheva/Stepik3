@@ -26,10 +26,7 @@ def main_view():
     meals_in_cart = meals_(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
-    if user is None:
-        is_login = False
-    else:
-        is_login = True
+    is_login = user is not None
     meals = dict()
     for category in db.session.query(Category).all():
         meals[category.title] = [category.id, []]
@@ -46,10 +43,7 @@ def category_view(category_id):
     meals_in_cart = meals_(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
-    if user is None:
-        is_login = False
-    else:
-        is_login = True
+    is_login = user is not None
     meals = []
     category = db.session.query(Category).get_or_404(category_id)
     category_title = category.title
@@ -89,10 +83,8 @@ def cart_view():
     meals_in_cart = meals_(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
-    if user is None:
-        is_login = False
-    else:
-        is_login = True
+    is_login = user is not None
+    if is_login:
         form.mail.data = user
     if flask.request.method == 'GET':
         return render_template("cart.html", cart=cart, meals_in_cart=meals_in_cart, is_login=is_login, form=form, dish=dish)
@@ -118,10 +110,7 @@ def account_view():
     meals_in_cart = meals_(cart)
     dish = case_endings(len(meals_in_cart))
     user = session.get("user")
-    if user is None:
-        is_login = False
-    else:
-        is_login = True
+    is_login = user is not None
     user_id = db.session.query(User).filter(User.mail == user).first()
     orders = []
     for order in db.session.query(Order).filter(Order.user == user_id).all():
